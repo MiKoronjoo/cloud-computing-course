@@ -1,0 +1,43 @@
+version: "3"
+
+services:
+  server:
+    build:
+      context: .
+      dockerfile: server/Dockerfile
+    volumes:
+      - servervol:/serverdata
+    ports:
+      - "8000:8000"
+    networks:
+      - mynetwork
+    depends_on:
+      - mongo
+
+  client:
+    build:
+      context: .
+      dockerfile: client/Dockerfile
+    volumes:
+      - clientvol:/clientdata
+    networks:
+      - mynetwork
+    depends_on:
+      - server
+
+  mongo:
+    image: mongo:latest
+    ports:
+      - '27017:27017'
+    networks:
+      - mynetwork
+    volumes:
+      - mongodb:/data/db
+
+volumes:
+  servervol:
+  clientvol:
+  mongodb:
+
+networks:
+  mynetwork:
